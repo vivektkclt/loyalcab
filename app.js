@@ -31,7 +31,7 @@ document.querySelector('#booking-form').addEventListener('submit', event => {
   for (const input of [pickup, destination]) { input.setCustomValidity(input.value.trim() ? '' : 'Please enter a location.'); if (!input.reportValidity()) return; }
   date.min = localToday();
   if (!date.reportValidity()) return;
-  const message = `Hello Loyal Cab! I’d like a trip quote.\n\nJourney: ${trip}\nPickup: ${pickup.value.trim()}\nDestination: ${destination.value.trim()}\nDate: ${date.value}\nTravellers: ${document.querySelector('#passengers').value}\nPreferred vehicle: ${document.querySelector('#vehicle').value}\nSightseeing & stay assistance: ${document.querySelector('#stay').checked ? 'Yes, please discuss options' : 'Not requested'}\n\nPlease confirm availability, fare and inclusions.`;
+  const message = `Hello Loyal Cab! I’d like a trip quote.\n\nJourney: ${trip}\nPickup: ${pickup.value.trim()}\nDestination: ${destination.value.trim()}\nDate: ${date.value}\nTravellers: ${document.querySelector('#passengers').value}\nSightseeing & stay assistance: ${document.querySelector('#stay').checked ? 'Yes, please discuss options' : 'Not requested'}\n\nPlease confirm availability, fare and inclusions.`;
   const url = `https://wa.me/919895703350?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank', 'noopener,noreferrer');
   const status = document.querySelector('#form-status');
@@ -47,3 +47,14 @@ nav.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMe
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && nav.classList.contains('open')) { closeMenu(); menu.focus(); } });
 document.querySelector('#year').textContent = new Date().getFullYear();
 
+// Carry the chosen sightseeing stop into the existing enquiry form.
+document.querySelectorAll('[data-destination]').forEach(link => link.addEventListener('click', () => {
+  selectTrip(link.dataset.destinationTrip);
+  const pickup = document.querySelector('#pickup');
+  const destination = document.querySelector('#destination');
+  if (!pickup.value.trim()) pickup.value = 'Kozhikode (Calicut)';
+  destination.value = link.dataset.destination;
+  pickup.setCustomValidity('');
+  destination.setCustomValidity('');
+  document.querySelector('#form-status').textContent = `${link.dataset.destination} selected. Add your date and traveller count to enquire about a sightseeing trip.`;
+}));
